@@ -1,0 +1,71 @@
+\documentclass[12pt,a4paper]{amsart}
+% ukazi za delo s slovenscino -- izberi kodiranje, ki ti ustreza
+\usepackage[slovene]{babel}
+%\usepackage[cp1250]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{url}
+%\usepackage[normalem]{ulem}
+\usepackage[dvipsnames,usenames]{color}
+
+
+\textwidth 15cm
+\textheight 24cm
+\oddsidemargin.5cm
+\evensidemargin.5cm
+\topmargin-5mm
+\addtolength{\footskip}{10pt}
+\pagestyle{plain}
+\overfullrule=15pt 
+
+\begin{document}
+
+\section{Razlaga pojmov}
+
+V teoriji grafov preko indikatorjev centralnosti poiščemo najpomembnejša vozlišča v grafu, oziroma najvplivnejšo osebo v socialnem omrežju. Vozlišče je pomembnejše, če ima višjo vrednost bližine in medsebojne centralnosti ter nižjo vrednost ekscentričnosti.
+
+\subsection{Closeness centrality/Closeness (Bližina)}
+
+Blizina je v povezanem grafu mera centralnosti, ki jo izračunamo kot recipročno vsoto dolžin najkrajših poti med nekim vozliščem in vsemi drugimi vozliščem v grafu. Bližje kot je opazovano vozlišče ostalim vozliščem v grafu, bolj centralno je.
+$$C(x) = \frac{1}{\sum_{y}^{} d(y,x)}, $$
+kjer je $d(y, x)$ razdalja med vozliščema x in y. 
+Pogosto se namesto zgornje vrednosti izračuna povprečno dolžino najkrajše poti v grafu. Dobimo jo tako, da zgornjo formula pomnožimo z $N-1$, kjer je $N$ število vseh vozlišč v grafu. Pri obežnejših grafih se $-1$ izpusti iz enačbe, zato se za bližini uporablja kar sledečo formulo:
+$$C(x) = \frac{N}{\sum_{y}^{} d(y,x)}.$$
+
+Pri usmerjenih grafih je potrebno upoštevati tudi smer povezav. Določeno vozlišče ima lahko različno bližino za vhodne in izhodne povezave.
+V nepovezanih grafih namesto recipročne vsote dolžin najkrajših poti med vozlišči računamo vsoto recipročnih dolžin najkrajših poti med vozlišči. Pri tem upoštevamo, da $\frac{1}{\infty} = 0.$
+$$H(x) = \sum_{y \ne x}^{} \frac{1}{d(y, x)}$$
+
+
+\subsection{Eccentricity (ekscentričnosti)}
+Ekscentričnost nekega vozlišča v  v povezanem grafu $G$ označimo z $\epsilon(v)$ in je definirana kot maksimalna dolžina med vozliščem v in katerimkoli drugim vozliščem v grafu $G$. V nepovezanih grafih imajo vsa vozlišča neskončno vrednost ekscentičnosti.
+Maksimalno ekscentričnost v grafu imenujemo diameter (premer) grafa (najdaljša najkrajša pot med dvema vozliščema grafa), minimalno ekscentričnost pa polmer grafa.
+
+
+\subsection{“Betweenness centrality”}
+
+V teoriji grafov je “betweenness centrality” mera centralizacije grafa, ki temelji na najkrajših poteh v grafu. Za vsak par vozlišč v povezanem grafu, obstaja vsaj ena najkrajša pot med vozliščema tako, da je katerokoli število povezav, po katerih gre ta pot (za neutežene grafe) ali pa vsota uteži na povezavah (za utežene grafe) minimalna. “Betweenness centrality” za vsako vozlišče je število teh najkrajših poti, ki grejo skozi vozlišče. “Betweenness centrality” se uporablja v mnogih problemih v teoriji omrežij, tudi v problemih povezanih s socialnimi omrežji, biologijo in transportom. V telekomunicijskem omrežju ima vozlišče z višjim “betweenness centrality” večjo kontrolo nad omrežjem, ker bo več informacij teklo čez to vozlišče. “Betweenness centrality” vozlišča $v$ je podana z izrazom:
+$$g(v) = \sum_{s \ne v \ne t}^{ } \frac{\sigma_{st} (v)}{\sigma_{st}}$$
+
+Kjer je $\sigma_{st}$ skupno število najkrajših poti od vozlišča $s$ do vozlišča $t$ in $\sigma_{st} (v)$ je število teh poti, ki grejo skozi $v$. Potrebno je upoštevati, da “betweenness centrality” nekega vozlišča skalira s številom parov vozlišč, na kar implicirajo tudi indeksi v vsoti. Zato se lahko računanje spremeni tako, da delimo s številom parov vozlišč, ki ne vsebujejo $v$, tako da je $g \in [0, 1]$.  Deljenje se izvede z $(N - 1)(N - 2)$ za usmerjene grafe in $(N - 1)(N - 2)/2$ za neusmerjene grafe, kjer je $N$ število vozlišč v povezani komponenti grafa. To skalira za najvišjo možno vrednost, kjer eno vozlišče seka vsaka najkrajša pot. Vendar pa ponavadi ni tako, zato je potrebna normalizacija 
+
+$$normal(g(v)) = \frac{g(v) - min(g)}{max(g) - min(g)},$$
+ki prinese rezultat: 
+
+$$max(normal) = 1; min(normal) = 0.$$
+
+Skaliranje vedno poteka iz manjšega obsega v večji obsega zato se ne izgubi nič natančnosti.
+
+V uteženih omrežjih se povezave med vozlišči ne štejejo več za binarne interakcije, ampak so utežene v razmerju z njihovo kapaciteto, kar doda novo dimenzijo heterogenosti znotraj  omrežja. Moč vozlišča v uteženem omrežju je podana z vsoto uteži na sosednjih povezavah. 
+
+$$s_i = \sum_{j=1}^{N} a_{ij} \cdot w_{ij}$$
+
+Kjer sta $a_{ij}$  in $w_{ij}$ matrika sosednosti in matrika uteži med vozliščama $i$ in $j$. Moč danega vozlišča sledi "pravilu porazdeliteve moči".
+
+
+
+
+
+
+\end{document}
