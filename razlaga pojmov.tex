@@ -21,29 +21,37 @@
 
 \begin{document}
 
+\title{Eccentricity, closeness and betweenness centrality \\
+\small Kratek opis}
+
+\author{Eva Deželak, Nejc Lukežič}
+\maketitle
+
+\section{Uvod}
+Pri najinem projektu bova s pomočjo treh različnih mer (ekscentričnosti, bližine in vmesne centralnosti) iskala in analizirala najpomembnejša vozlišča v grafih oziroma socialnih omrežjih. Vozlišče je pomembnejše, če ime višjo vrednost bližine in vmesne centralnosti ter nižjo vrednost ekscentričnosti. Natančnejši opisi pojmov so spodaj. Primerjala bova, kako pogosto je vozlišče, ki je pomembno z vidika ene mere, pomembno tudi v okviru ostalih dveh mer.\\
+Najino glavno orodje za analizo grafov bo $Sage$, kjer bova generirala več grafov (približno 1000) v različnih velikostih (približno 10), grafe socialnih omrežij pa bova pridobila s spleta. Opazovala bova tudi, kako se vrednosti mer za najpomembnejša vozlišča spremenijo, če se omejimo na podgraf v določenem grafu. Grafi, ki jih bova pri projektu analizirala, bodo neusmerjeni.
+
 \section{Razlaga pojmov}
 
-V teoriji grafov preko indikatorjev centralnosti poiščemo najpomembnejša vozlišča v grafu, oziroma najvplivnejšo osebo v socialnem omrežju. Vozlišče je pomembnejše, če ima višjo vrednost bližine in medsebojne centralnosti ter nižjo vrednost ekscentričnosti.
+\subsection{Bližina (Closeness centrality/Closeness)}
 
-\subsection{Closeness centrality/Closeness (Bližina)}
-
-Blizina je v povezanem grafu mera centralnosti, ki jo izračunamo kot recipročno vsoto dolžin najkrajših poti med nekim vozliščem in vsemi drugimi vozliščem v grafu. Bližje kot je opazovano vozlišče ostalim vozliščem v grafu, bolj centralno je.
+Bližina je v povezanem grafu mera centralnosti, ki jo izračunamo kot recipročno vsoto dolžin najkrajših poti med nekim vozliščem in vsemi drugimi vozlišči v grafu. Bližje kot je opazovano vozlišče ostalim vozliščem v grafu, bolj centralno je.
 $$C(x) = \frac{1}{\sum_{y}^{} d(y,x)}, $$
 kjer je $d(y, x)$ razdalja med vozliščema x in y. 
-Pogosto se namesto zgornje vrednosti izračuna povprečno dolžino najkrajše poti v grafu. Dobimo jo tako, da zgornjo formula pomnožimo z $N-1$, kjer je $N$ število vseh vozlišč v grafu. Pri obežnejših grafih se $-1$ izpusti iz enačbe, zato se za bližini uporablja kar sledečo formulo:
+Pogosto se namesto zgornje vrednosti izračuna povprečno dolžino najkrajše poti v grafu. Dobimo jo tako, da zgornjo formulo pomnožimo z $N-1$, kjer je $N$ število vseh vozlišč v grafu. Pri obsežnejših grafih se $-1$ izpusti iz enačbe, zato se za bližino uporablja kar sledečo formulo:
 $$C(x) = \frac{N}{\sum_{y}^{} d(y,x)}.$$
 
 Pri usmerjenih grafih je potrebno upoštevati tudi smer povezav. Določeno vozlišče ima lahko različno bližino za vhodne in izhodne povezave.
 V nepovezanih grafih namesto recipročne vsote dolžin najkrajših poti med vozlišči računamo vsoto recipročnih dolžin najkrajših poti med vozlišči. Pri tem upoštevamo, da $\frac{1}{\infty} = 0.$
-$$H(x) = \sum_{y \ne x}^{} \frac{1}{d(y, x)}$$
+$$H(x) = \sum_{y \ne x}^{} \frac{1}{d(y, x)}.$$
 
 
-\subsection{Eccentricity (ekscentričnosti)}
+\subsection{Ekscentričnost (Eccentricity)}
 Ekscentričnost nekega vozlišča v  v povezanem grafu $G$ označimo z $\epsilon(v)$ in je definirana kot maksimalna dolžina med vozliščem v in katerimkoli drugim vozliščem v grafu $G$. V nepovezanih grafih imajo vsa vozlišča neskončno vrednost ekscentičnosti.
 Maksimalno ekscentričnost v grafu imenujemo diameter (premer) grafa (najdaljša najkrajša pot med dvema vozliščema grafa), minimalno ekscentričnost pa polmer grafa.
 
 
-\subsection{“Betweenness centrality”}
+\subsection{Vmesna centralnost (Betweenness centrality)}
 
 V teoriji grafov je “betweenness centrality” mera centralizacije grafa, ki temelji na najkrajših poteh v grafu. Za vsak par vozlišč v povezanem grafu, obstaja vsaj ena najkrajša pot med vozliščema tako, da je katerokoli število povezav, po katerih gre ta pot (za neutežene grafe) ali pa vsota uteži na povezavah (za utežene grafe) minimalna. “Betweenness centrality” za vsako vozlišče je število teh najkrajših poti, ki grejo skozi vozlišče. “Betweenness centrality” se uporablja v mnogih problemih v teoriji omrežij, tudi v problemih povezanih s socialnimi omrežji, biologijo in transportom. V telekomunicijskem omrežju ima vozlišče z višjim “betweenness centrality” večjo kontrolo nad omrežjem, ker bo več informacij teklo čez to vozlišče. “Betweenness centrality” vozlišča $v$ je podana z izrazom:
 $$g(v) = \sum_{s \ne v \ne t}^{ } \frac{\sigma_{st} (v)}{\sigma_{st}}$$
