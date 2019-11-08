@@ -1,5 +1,5 @@
 # Eccentricity, Closeness and Betweenness Centrality
-Študenta: Eva Deželak in Nejc Lukežič
+Avtorja: Eva Deželak in Nejc Lukežič
 
 Pri najinem projektu bova s pomočjo treh različnih mer (ekscentričnosti, bližine in vmesne centralnosti) iskala in analizirala najpomembnejša vozlišča v grafih oziroma socialnih omrežjih. Vozlišče je pomembnejše, če ima višjo vrednost bližine in vmesne centralnosti ter nižjo vrednost ekscentričnosti. Natančnejši opisi pojmov so v kratkem poročilu. Primerjala bova kako pogosto je vozlišče, ki je pomembno z vidika ene mere, pomembno tudi v okviru ostalih dveh mer.
 
