@@ -1,3 +1,5 @@
+from json import dump
+
 grafi = ("socialno omrezje", "generirani grafi")
 
 povprecja = [] #sedaj bomo primerjali socialno omrežje in generirane grafe, zato bomo najprej dodati povprečje za socialno omrežje, nato pa še za generirane grafe
