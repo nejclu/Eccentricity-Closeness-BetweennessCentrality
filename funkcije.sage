@@ -59,8 +59,8 @@ matplotlib.use("Agg")
 # In[1]:
 
 
-G = graphs.RandomGNP(10, 0.5)
-show(G)
+#G = graphs.RandomGNP(10, 0.5)
+#show(G)
 
 
 # In[2]:
@@ -68,11 +68,12 @@ show(G)
 
 def blizina(G):
     seznam = []
-    for x in range(len(G.distance_all_pairs())):
-        D = 1/sum(G.distance_all_pairs()[x].values())
+    d = G.distance_all_pairs()
+    for x in G:
+        D = 1/sum(d[x].values())
         seznam.append((x,D))
     return seznam
-blizina(G)
+#blizina(G)
 
 
 # In[3]:
@@ -80,11 +81,11 @@ blizina(G)
 
 def ekscentricnost(G):
     seznam = []
-    for x in range(len(G.distance_all_pairs())):
+    for x in G:
         E = G.eccentricity(x)
         seznam.append((x,E))
     return seznam
-ekscentricnost(G)
+#ekscentricnost(G)
 
 
 # In[4]:
@@ -93,12 +94,12 @@ ekscentricnost(G)
 import networkx as nx 
 
 def vmesna_centralnost(G):
-    for x in range(len(G.distance_all_pairs())):
+    for x in G:
         nxG = G.networkx_graph()
         Vslovar = nx.betweenness_centrality(nxG) #to nam vrne slovar, kjer je vozlišče ključ in vmesna centralnost vozlišča vrednost
         V = Vslovar.items() #slovar moramo pretvoriti v seznam, da bo prave oblike za algoritem
         return V
-vmesna_centralnost(G)
+#vmesna_centralnost(G)
 
 
 # In[5]:
@@ -109,45 +110,23 @@ import math
 def najboljsa_vozlisca(G, velikost, B, E, V):
 
     najboljsi = round(velikost * 0.1) #zračunamo, koliko najboljših vozlišč bomo vzeli ven, če želimo 10% najboljših
-            
-    maxB = [] #za bližino želimo dobiti seznam najboljših vozlišč, torej tisth, kjer je bližina največja
-    for j in range(najboljsi):
-        najboljsiB = 0
-        for element in B:
-            if najboljsiB < element[1]:
-                najboljsiB = max(najboljsiB, element[1]) #poiščemo vozlišče z največjo bližino
-                vozlisceB = element[0] #zapomnimo si še vozlišče
-        B.remove(element) #ta element odstranimo iz seznama B
-        maxB.append((vozlisceB, najboljsiB)) #element dodamo v nov seznam najboljših (ime vozlišča, vrednost bližine vozlišča)
+    B.sort(key=lambda x: -x[1]) #seznam uredimo po velikosti glede na vrednosti mere
+    maxB = B[:najboljsi] # iz seznama vzamemo najoljše elemente
     minimalni = min(maxB, key=lambda x: x[1])[1] #Preveriti moramo še, če je slučajno v B ostal kakšen element, ki ima enako vrednost, kot jo ima najmanjši element v maxB, saj mora biti potem to vozlišče tudi v maxB
     for element in B:
         if element[1] == minimalni:
             maxB.append((element[0], element[1]))
 
-    minE = [] #za ekscentričnost želimo dobiti tista vozlišča, kjer je ekscentričnost najmanjša
-    for j in range(najboljsi):
-        najboljsiE = 10000000000000 #neka velika številka, ker želimo najti minimum
-        for elementE in E:
-            if najboljsiE > elementE[1]:
-                najboljsiE = min(elementE[1], najboljsiE)
-                vozlisceE = elementE[0]
-        E.remove(elementE)
-        minE.append((vozlisceE, najboljsiE))
+    E.sort(key=lambda x: x[1])
+    minE = E[:najboljsi]
     maksimalni = max(minE, key=lambda x: x[1])[1] #Preveriti moramo še, če je slučajno v E ostal kakšen element, ki ima enako vrednost, kot jo ima največji element v minE, saj mora biti potem to vozlišče tudi v minE
     for element in E:
         if element[1] == maksimalni:
             minE.append((element[0], element[1]))
 
 
-    maxV = [] #za vmesno centralnost ponovno gledamo največjo vrednost
-    for j in range(najboljsi):
-        najboljsiV = 0
-        for elementV in V:
-            if najboljsiV < elementV[1]:
-                najboljsiV = max(najboljsiV, elementV[1])
-                vozlisceV = elementV[0]
-        V.remove(elementV)
-        maxV.append((vozlisceV, najboljsiV))
+    V.sort(key=lambda x: -x[1])
+    maxV = V[:najboljsi]
     minimalni = min(maxV, key=lambda x: x[1])[1] #Preveriti moramo še, če je slučajno v V ostal kakšen element, ki ima enako vrednost, kot jo ima najmanjši element v maxV, saj mora biti potem to vozlišče tudi v maxV
     for element in V:
         if element[1] == minimalni:
@@ -173,21 +152,17 @@ def skupna(maxB, minE, maxV):
         imenaV+= [element[0]]
 
     skupna_vozl = set(imenaB).intersection(imenaE).intersection(imenaV) #naredimo presek vsek treh seznamov.
-    #Še po parih, če nam bo slučajno pršlo prou ...
-    #najp_B_E = set(imenaB).intersection(imenaE)
-    #najp_B_V = set(imenaB).intersection(imenaV)
-    #najp_E_V = set(imenaE).intersection(imenaV)
     return(skupna_vozl)
 
 
-# In[7]:
+# In[17]:
 
 
 from __future__ import division
 
 def algoritem(velikost):
-    povprecje = 0
-    for i in range(10):
+    vsota = 0
+    for i in range(100):
         G = graphs.RandomGNP(velikost, 0.7) #generiramo graf
         if G.is_connected() == True: #preverimo, če je povezan
             B = blizina(G) #dobimo seznam vozlišč in njihove bližine
@@ -198,19 +173,47 @@ def algoritem(velikost):
             skupna_vozlisca = skupna(maxB, minE, maxV) #preverimo, koliko vozlišč je vsem trem meram skupno
             stevilo_skupnih_vozlisc = len(skupna_vozlisca) #preštejemo števila skupnih vozlišč
             pokritost = float(stevilo_skupnih_vozlisc / max(len(maxB), len(minE), len(maxV))) #zračunamo procent, koliko vozlišč je skupnih vsem trem meram
-            povprecje = (povprecje + pokritost) / 2 #sproti računamo povprečno pokritost za vse grafe
+            vsota += pokritost
+            povprecje = vsota / (i+1) #sproti računamo povprečno pokritost za vse grafe
+            print(povprecje)
         
     return(povprecje)
             
         
         
    
-algoritem(10)
+#algoritem(10)
 
 
-# In[9]:
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-plt.rcdefaults()
+# Torej analizirali smo grafe velikosti 20, 40, 75, 100, 200, 400, 800 in 1000. Iz zgornjega grafa je lepo razvidno, da povprečje vozlišč, ki so najboljša iz zornega kota najinih treh mer, precej strmo pada s tem, ko višamo število vozlišč v grafu. Če najprej pogledamo grafe na 20 vozliščih vidimo, da je tu prisotnih največ vozlišč v povprečju, ki se med seboj ujemajo, čeprav če pogledamona skalo grafa, je še vseeno ta številka precej majhna - torej gre za približno 5% pokrivanje vozlišč. Že pri grafih na 40 vozliščih pa se ta številka že precej zniža in pridemo na malce več kot 2% vozlišč. To zniževanje opazujemo naprej in pri grafu na 1000 vozliščih vidimo, da je ujemanje vozlišč že skoraj pri 0. 
+
+# ## Socialno omrežje
+
+# In[8]:
+
+
+import networkx as nx
+import math
+
+G_fb = nx.read_edgelist("primeri_socialnih_omrezij/facebook_combined.txt", create_using = nx.Graph(), nodetype=int) #Iz datoteke smo socialno omrežje zapisali v obliki grafa
+#Graf ima 4039 vozlišč in 88234 povezav
+G_fb_sage = Graph(G_fb) #Zgornji graf smo pretvorili v Sage-ov graf
+G_tretji = nx.read_edgelist("primeri_socialnih_omrezij/testni5.txt", create_using = nx.Graph(), nodetype=int) #Iz datoteke smo socialno omrežje zapisali v obliki grafa
+G_sage_tretji = Graph(G_tretji) #Zgornji graf smo pretvorili v Sage-ov graf
+
+
+def algoritem_soc(socialno_omrezje):
+    B = blizina(socialno_omrezje) #dobimo seznam vozlišč in njihove bližine
+    E = ekscentricnost(socialno_omrezje) #dobimo seznam vozlišč in njihove ekscentričnosti
+    V = vmesna_centralnost(socialno_omrezje) #dobimo seznam vozlišč in njihove vmesne centralnosti
+    povprecje = 0
+    velikost = 4039 
+    maxB, minE, maxV = najboljsa_vozlisca(G, velikost, B, E, V) #naredimo sezname najboljših vozlišč za vsako mero posebej
+    skupna_vozlisca_soc = skupna(maxB, minE, maxV) #preverimo, koliko vozlišč je vsem trem meram skupno
+    stevilo_skupnih_vozlisc_soc = len(skupna_vozlisca_soc) #preštejemo števila skupnih vozlišč
+    povprecje = float(stevilo_skupnih_vozlisc_soc / max(len(maxB), len(minE), len(maxV))) #zračunamo procent, koliko vozlišč je skupnih vsem trem meram
+    #povprecje = (povprecje + pokritost) / 2 #sproti računamo povprečno pokritost za vse grafe
+        
+    return(povprecje)
