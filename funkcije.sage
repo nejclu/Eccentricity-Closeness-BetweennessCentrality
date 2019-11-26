@@ -220,3 +220,77 @@ def algoritem_soc(socialno_omrezje):
     #povprecje = (povprecje + pokritost) / 2 #sproti računamo povprečno pokritost za vse grafe
         
     return(povprecje)
+
+from __future__ import division
+
+def shrani_podgrafe(G):
+    seznam = []
+    #generiramo štiri random podgrafe in jih damo v seznam
+    for i in range(4):
+        seznam.append(G.random_subgraph(0.95 - i*0.05))
+    return seznam
+
+def izracunaj_mere_za_podgrafe(G_sub,mera):
+    seznam = []
+    #izračunamo mere za vse štiri podgrafe in jih damo v seznam
+    if mera == "blizina":
+        for i in range(4):
+            seznam.append(blizina(G_sub[i]))
+    elif mera == "ekscentricnost":
+        for i in range(4):
+            seznam.append(ekscentricnost(G_sub[i]))
+    elif mera == "vmesna_centralnost":
+        for i in range(4):
+            seznam.append(vmesna_centralnost(G_sub[i]))
+    return seznam
+
+def izracunaj_povprecje(skupna_vozlisca,skupna_prvotni):
+    if len(skupna_vozlisca) > 0 :#ker je bil problem, če ni bilo skupnih vozlišč ... deljenje z 0
+        return  len(skupna_prvotni)/len(skupna_vozlisca) #procent ujemanja
+    else:
+        return 0
+
+def algoritem_sub(velikost, izpisi=False):
+    k = 100 #da ne spreminjamo števillka v prvi for zanki in pri returnu za vsak od štirih rezultatov
+    vsota_prvotni_sub = [0, 0, 0, 0]
+    j = 0
+   
+    for i in range(k):
+        G = graphs.RandomGNP(velikost, 0.7) #generiramo graf
+        if G.is_connected() == True: #preverimo, če je povezan
+            B = blizina(G) #dobimo seznam vozlišč in njihove bližine
+            E = ekscentricnost(G) #dobimo seznam vozlišč in njihove ekscentričnosti
+            V = vmesna_centralnost(G) #dobimo seznam vozlišč in njihove vmesne centralnosti
+            #Za vsak graf naredimo 4 podgrafe štirih različnih velikosti
+            G_sub = shrani_podgrafe(G)
+            B_sub = izracunaj_mere_za_podgrafe(G_sub,"blizina")
+            E_sub = izracunaj_mere_za_podgrafe(G_sub,"ekscentricnost")
+            V_sub = izracunaj_mere_za_podgrafe(G_sub,"vmesna_centralnost")
+           
+            
+            maxB, minE, maxV = najboljsa_vozlisca(G, velikost, B, E, V) #naredimo sezname najboljših vozlišč za vsako mero posebej
+            max_B_minE_maxV_sub = []
+            for i in range(4):
+                max_B_minE_maxV_sub.append(najboljsa_vozlisca(G_sub[i],velikost*(0.95 - i*0.15),B_sub[i], E_sub[i], V_sub[i]))
+            
+            skupna_vozlisca = skupna(maxB, minE, maxV) #preverimo, koliko vozlišč je vsem trem meram skupno
+            skupna_vozlisca_sub = []
+            for i in range(4):
+                skupna_vozlisca_sub.append(skupna(max_B_minE_maxV_sub[i][0],max_B_minE_maxV_sub[i][1],max_B_minE_maxV_sub[i][2]))
+
+            
+            #Primerjava podgrafov in originalnega grafa - presek podgrafa in originalnega grafa
+            skupni_prvotni_sub = []
+            for i in range(4):
+                skupni_prvotni_sub.append(set(skupna_vozlisca).intersection(skupna_vozlisca_sub[i]))
+            
+            j += 1
+            for i in range(4):
+                vsota_prvotni_sub[i] += izracunaj_povprecje(skupna_vozlisca_sub[i],skupni_prvotni_sub[i])
+            povprecje_prvotni_sub = [v/j for v in vsota_prvotni_sub]
+            if izpisi:
+                print(j, povprecje_prvotni_sub)
+                
+            
+        
+    return(povprecje_prvotni_sub)
