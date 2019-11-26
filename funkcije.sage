@@ -160,8 +160,9 @@ def skupna(maxB, minE, maxV):
 
 from __future__ import division
 
-def algoritem(velikost):
+def algoritem(velikost, izpis=False):
     vsota = 0
+    j = 0
     for i in range(100):
         G = graphs.RandomGNP(velikost, 0.7) #generiramo graf
         if G.is_connected() == True: #preverimo, če je povezan
@@ -174,8 +175,10 @@ def algoritem(velikost):
             stevilo_skupnih_vozlisc = len(skupna_vozlisca) #preštejemo števila skupnih vozlišč
             pokritost = float(stevilo_skupnih_vozlisc / max(len(maxB), len(minE), len(maxV))) #zračunamo procent, koliko vozlišč je skupnih vsem trem meram
             vsota += pokritost
-            povprecje = vsota / (i+1) #sproti računamo povprečno pokritost za vse grafe
-            print(povprecje)
+            j += 1
+            povprecje = vsota / j #sproti računamo povprečno pokritost za vse grafe
+            if izpis:
+                print(povprecje)
         
     return(povprecje)
             
@@ -210,7 +213,7 @@ def algoritem_soc(socialno_omrezje):
     V = vmesna_centralnost(socialno_omrezje) #dobimo seznam vozlišč in njihove vmesne centralnosti
     povprecje = 0
     velikost = 4039 
-    maxB, minE, maxV = najboljsa_vozlisca(G, velikost, B, E, V) #naredimo sezname najboljših vozlišč za vsako mero posebej
+    maxB, minE, maxV = najboljsa_vozlisca(socialno_omrezje, velikost, B, E, V) #naredimo sezname najboljših vozlišč za vsako mero posebej
     skupna_vozlisca_soc = skupna(maxB, minE, maxV) #preverimo, koliko vozlišč je vsem trem meram skupno
     stevilo_skupnih_vozlisc_soc = len(skupna_vozlisca_soc) #preštejemo števila skupnih vozlišč
     povprecje = float(stevilo_skupnih_vozlisc_soc / max(len(maxB), len(minE), len(maxV))) #zračunamo procent, koliko vozlišč je skupnih vsem trem meram

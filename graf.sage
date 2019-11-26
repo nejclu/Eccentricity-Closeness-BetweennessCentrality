@@ -6,9 +6,8 @@ povprecja = []
 for i in velikosti:
     povprecja.append(algoritem(i)) #za vsako velikost poženemo algoritem, da dobimo povprečno pokritost
     print(povprecja[-1])
-
-with open("povprecja.json", "w") as f:
-    dump(povprecja, f)
+    with open("povprecja.json", "w") as f:
+        dump(povprecja, f)
 
 y_pos = np.arange(len(povprecja))
 plt.bar(y_pos,povprecja,align = 'center',color=(0.2, 0.4, 0.6, 0.6))
