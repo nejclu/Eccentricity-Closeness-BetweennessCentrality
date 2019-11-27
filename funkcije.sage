@@ -160,11 +160,11 @@ def skupna(maxB, minE, maxV):
 
 from __future__ import division
 
-def algoritem(velikost, izpis=False):
+def algoritem(velikost, p=0.7, izpis=False):
     vsota = 0
     j = 0
     for i in range(100):
-        G = graphs.RandomGNP(velikost, 0.7) #generiramo graf
+        G = graphs.RandomGNP(velikost, p) #generiramo graf
         if G.is_connected() == True: #preverimo, če je povezan
             B = blizina(G) #dobimo seznam vozlišč in njihove bližine
             E = ekscentricnost(G) #dobimo seznam vozlišč in njihove ekscentričnosti
